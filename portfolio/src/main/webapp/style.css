@@ -1,9 +1,33 @@
+a {
+    text-decoration: none;
+}
+
 #content {
   margin-left: auto;
   margin-right: auto;
   width: 650px;
 }
 
-#greeting-container {
-  margin-top: 20px;
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gallery img {
+  margin: 10px;
+  max-height: 300px;
+  max-width: 300px;
+}
+
+.gallery img:hover {
+  border: thick solid black;
+}
+
+.title {
+    font-size: 1.25rem;
+}
+
+.list-title {
+    font-size: 1rem;
 }
