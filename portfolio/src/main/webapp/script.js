@@ -12,17 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+/** Fetches comments from the server and adds them to the DOM. */
+function loadComments() {
+  fetch('/list-comments').then(response => response.json()).then((comments) => {
+    const commentListElement = document.getElementById('comment-list');
+    comments.forEach((comment) => {
+        commentListElement.appendChild(createCommentElement(comment));
+    })
+  });
+}
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+/** Creates an element that represents a comment, including its delete button. */
+function createCommentElement(comment) {
+  const commentElement = document.createElement('div');
+  commentElement.className = 'comment';
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  const usernameElement = document.createElement('p');
+  usernameElement.innerText = "Username: " + comment.username;
+
+  const messageElement = document.createElement('p');
+  messageElement.innerText = "Message: " + comment.message;
+
+  const dateElement = document.createElement('p');
+  dateElement.innerText = "Date posted: " + comment.date;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteComment(comment);
+
+    // Remove the task from the DOM.
+    commentElement.remove();
+  });
+
+  commentElement.appendChild(usernameElement);
+  commentElement.appendChild(messageElement);
+  commentElement.appendChild(dateElement);
+  commentElement.appendChild(deleteButtonElement);
+  commentElement.appendChild(document.createElement('hr'));
+
+  return commentElement;
+}
+
+/** Tells the server to delete the task. */
+function deleteComment(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment.id);
+  fetch('/delete-comment', {method: 'POST', body: params});
 }
